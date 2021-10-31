@@ -26,17 +26,20 @@ async function run() {
         const servicesCollection = database.collection("services");
         const orderCollection = database.collection("order");
         // query for movies that have a runtime less than 15 minutes
+        // get all service 
         app.get('/services', async (req, res) => {
             const cursor = await servicesCollection.find({});
             const result = await cursor.toArray();
             res.json(result);
         })
+        // get single service 
         app.get('/services/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) }
             const result = await servicesCollection.findOne(query);
             res.json(result);
         })
+        //add service 
         app.post('/addService', async (req, res) => {
             const data = req.body;
             const result = servicesCollection.insertOne(data);
@@ -44,12 +47,14 @@ async function run() {
             console.log(req.body);
             res.send(result);
         })
+        //add order 
         app.post('/order', async (req, res) => {
             const data = req.body;
             const result = await orderCollection.insertOne(data);
             console.log(req.body);
             res.send('done')
         })
+        //update 
         app.put('/allOrders/:id', async (req, res) => {
             console.log(req.params.id);
             const id = req.params.id;
@@ -65,11 +70,13 @@ async function run() {
             const result = await orderCollection.updateOne(filter, updateDoc, options);
             res.json(result);
         })
+        //find all orders
         app.get('/allOrders', async (req, res) => {
             const cursor = await orderCollection.find({});
             const result = await cursor.toArray();
             res.json(result);
         })
+        //delete orders
         app.delete('/allOrders/:id', async (req, res) => {
             const id = req.params.id;
             console.log(id);
@@ -77,6 +84,7 @@ async function run() {
             const result = await orderCollection.deleteOne(query);
             res.json(result);
         })
+        // get user order
         app.get('/myorders', async (req, res) => {
             const user = req.query.user;
             const query = { email: { $regex: user } };
@@ -84,6 +92,7 @@ async function run() {
             const result = await cursor.toArray();
             res.json(result);
         })
+        //delete my order
         app.delete('/myorder/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) }
